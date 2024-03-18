@@ -1,0 +1,26 @@
+{%extends 'base.html'%}
+{%block content%}
+{% load static %}
+{% static "images" as images_dir %}
+<div class = "row destinations_row">
+    <div class = "col">
+        <div class = "product_container item_grid">
+            {% for prod in prod %}
+            <!--Product-->
+            <div class = "product item">
+                <div class = "product_imge">
+                    <img src="{{images_dir}}/{{prod.img}}" alt="" />
+                   {% if prod.offer %}
+                    <div class="spec_offer text-center"><a href="#">Special offer</a></div>
+                    {%endif%}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+</div>
+
+{%endblock%}
