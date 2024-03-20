@@ -1,26 +1,28 @@
-{%extends 'base.html'%}
-{%block content%}
+{% extends 'base.html' %}
+{% block content %}
 {% load static %}
+
 {% static "images" as images_dir %}
-<div class = "row destinations_row">
-    <div class = "col">
-        <div class = "product_container item_grid">
-            {% for prod in prod %}
-            <!--Product-->
-            <div class = "product item">
-                <div class = "product_imge">
-                    <img src="{{images_dir}}/{{prod.img}}" alt="" />
-                   {% if prod.offer %}
-                    <div class="spec_offer text-center"><a href="#">Special offer</a></div>
-                    {%endif%}
+<div class="row destinations_row">
+    <div class="col">
+        <div class="product_container item_grid">
+            {% for product in products %}
+                <div class="product item">
+                    <div class="product_image">
+                        <img src="{{ images_dir }}/{{ prod.img }}" class="img-thumbnail" alt="">
+                        {% if product.offer %}
+                            <div class="spec_offer text-center"><a href="#">Special offer</a></div>
+                        {% endif %}
+                        <h2>{{ prod.name }}</h2>
+                        <p>{{ prod.description }}</p>
+                        <span>${{ prod.price }}</span>
+                        <button>Add to Cart</button>
+                    </div>
                 </div>
-            </div>
             {% endfor %}
         </div>
-
     </div>
-
-
 </div>
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+{% endblock %}
 
-{%endblock%}

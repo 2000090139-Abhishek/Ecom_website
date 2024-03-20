@@ -6,7 +6,7 @@ from .models import Product
 def home(request):
     prod1 = Product()
     prod1.name="Laptop"
-    # prod1.img = 'prod_mage_1'
+    prod1.img = 'prod_mage_1.jpg'
     prod1.price=2000
     prod1.description = 'Laptop'
     prod1.offer = True
