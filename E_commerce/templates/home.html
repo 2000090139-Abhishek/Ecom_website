@@ -1,28 +1,41 @@
-{% extends 'base.html' %}
-{% block content %}
-{% load static %}
 
-{% static "images" as images_dir %}
-<div class="row destinations_row">
-    <div class="col">
-        <div class="product_container item_grid">
-            {% for product in products %}
-                <div class="product item">
-                    <div class="product_image">
-                        <img src="{{ images_dir }}/{{ prod.img }}" class="img-thumbnail" alt="">
-                        {% if product.offer %}
-                            <div class="spec_offer text-center"><a href="#">Special offer</a></div>
-                        {% endif %}
-                        <h2>{{ prod.name }}</h2>
-                        <p>{{ prod.description }}</p>
-                        <span>${{ prod.price }}</span>
-                        <button>Add to Cart</button>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E commerce</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <div class="navbar" id="navbar">
+        <a href="#" class="active">Home</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+        <a href="javascript:void(0);" class="icon" onclick="toggleNavbar()">
+            &#9776;
+        </a>
+    </div>
+    <div class="row destinations_row">
+        <div class="col">
+            <div class="product_container item_grid">
+                
+                    <div class="product item">
+                        <div class="product_image">
+                            <img src="{% static 'images/prod_mage_1.jpg' %}" class="img-thumbnail" alt="">
+                            {% if product.offer %}
+                                <div class="spec_offer text-center"><a href="#">Special offer</a></div>
+                            {% endif %}
+                            <h2>{{ product.name }}</h2>
+                            <p>{{ product.description }}</p>
+                            <span>${{ product.price }}</span>
+                            <button>Add to Cart</button>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                
+            </div>
         </div>
     </div>
-</div>
-<link rel="stylesheet" href="{% static 'styles.css' %}">
-{% endblock %}
-
+</body>
+</html>

@@ -1,5 +1,5 @@
 
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 from .models import Product
 # Create your views here.
 
@@ -10,5 +10,7 @@ def home(request):
     prod1.price=2000
     prod1.description = 'Laptop'
     prod1.offer = True
-    prod =[prod1]
-    return render (request, 'home.html',{'prod':prod})
+    product =[prod1]
+    return render (request, 'home.html',{'product':product})
+    
+    
