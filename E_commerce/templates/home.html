@@ -6,10 +6,10 @@
 <div class="row destinations_row">
     <div class="col">
         <div class="product_container item_grid">
-            {% for product in products %}
+            {% for product in product %}
                 <div class="product item">
                     <div class="product_image">
-                        <img src="{{ images_dir }}/{{ product.img }}" class="img-thumbnail" alt="">
+                        <img src="{{ images_dir }}/{{ product.img.url }}" class="img-thumbnail" alt="">
                         {% if product.offer %}
                             <div class="spec_offer text-center"><a href="#">Special offer</a></div>
                         {% endif %}
