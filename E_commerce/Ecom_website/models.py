@@ -1,5 +1,5 @@
 from django.db import models
-from psutil import users
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -12,7 +12,7 @@ class Product(models.Model):
         return self.name
     
 class Auth(models.Model):
-    user = models.OneToOneField(users, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(user, on_delete=models.CASCADE, primary_key=True)
     phone = models.DecimalField(max_digits=13+ 1, decimal_places=0) # +1 for '+' sign
     address = models.CharField(max_length=300)
 
