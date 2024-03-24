@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="username">Username: </label><br>
+        <input type="text" name="username" id="username"><br>
+        <label for="firstname">First Name</label>
+        <input type="text" name="first_name" id="firstname"><br>
+        <label for="lastname">Last Name</label>
+        <input type="text" name="last_name" id="">
+        <label for="email">Email Address: </label><br>
+        <input type="email" name="email" id="email"><br>
+        <label for="password1">Password: </label><br>
+        <input type="password" name="password1" id="password1"><br>
+        <label for="password2">Repeat Password: </label><br>
+        <input type="password" name="password2" id="password2"><br>
+        <span style="color:red;">{{ error }}</span><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
+{% endblock %}
