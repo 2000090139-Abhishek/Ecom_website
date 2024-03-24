@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -12,10 +13,10 @@ class Product(models.Model):
         return self.name
     
 class Auth(models.Model):
-    user = models.OneToOneField(user, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     phone = models.DecimalField(max_digits=13+ 1, decimal_places=0) # +1 for '+' sign
     address = models.CharField(max_length=300)
 
 
     def __str__(self):
-        return f"{self.user}"  #return username or something else?
+        return f"{self.user}"

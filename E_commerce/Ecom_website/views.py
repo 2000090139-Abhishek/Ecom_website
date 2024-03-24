@@ -16,8 +16,8 @@ def auth(request):
             'name' : username,
             'pass' : password
         }
-        return render(request, 'home.html', {'product': product})
+        return render(request, 'home.html')
     else:
-        return render(request,'auth.html)
+        return render(request,'auth.html')
 
 # Create your views here.
