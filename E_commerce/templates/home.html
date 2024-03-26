@@ -9,26 +9,28 @@
             {% for product in product %}
                 <div class="product item">
                     <div class="product_image">
-
-                        {% if product.img %}
-                        <img src="{{product.img.url}}" class="img-thumbnail" alt="{{product.name}} ">
-                        {% else %}
-                        <img src="{% static 'images/product.png' %}" class="img-thumbnail" alt="E-Commerce ">
+                       
+                            {% if product.img %}
+                            <a href="{% url 'product_details' product.id %}"><img src="{{ product.img.url }}" class="img-thumbnail" alt="{{ product.name }}"></a>
+                            {% else %}
+                                <a href="{% url 'product_details' product.id %}"><img src="{% static 'images/product.png' %}" class="img-thumbnail" alt="E-Commerce"></a>
+                            {% endif %}
+                            {% if product.offer %}
+                                <div class="spec_offer text-center">Special offer</div>
+                            {% endif %}
+                            <h2>{{ product.name }}</h2>
+                            <p>{{ product.description }}</p>
+                            <span>${{ product.price }}</span>
+                            <button><a href="#">Add to Cart</a></button>
+                       
                         
-                    
-
-                        {% endif %}
-                        {% if product.offer %}
-                            <div class="spec_offer text-center"><a href="#">Special offer</a></div>
-                        {% endif %}
-                        <h2>{{ product.name }}</h2>
-                        <p>{{ product.description }}</p>
-                        <span>${{ product.price }}</span>
-                        <button>Add to Cart</button>
                     </div>
+                    
                 </div>
             {% endfor %}
+            
         </div>
     </div>
 </div>
+
 {% endblock %}

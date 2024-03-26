@@ -1,6 +1,6 @@
 
 from urllib import request
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -73,11 +73,17 @@ def loginUser(request):
     return render(request, "Login.html")
 
 
-
-
-
-
-
 def logOutUser(request):
     logout(request)
     return redirect("home")
+
+def product_details(request, pk):
+    # Retrieve the product with the given primary key or return a 404 error if not found
+    product = get_object_or_404(Product, pk=pk)
+
+    context = {
+        'product': product,  # Pass the single product object to the template
+    }
+
+    return render(request, 'Pdetails.html', context)
+
