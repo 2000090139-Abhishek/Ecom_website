@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'Product_details.css' %}">
 
 <main class="offcanvas-enabled" style="padding-top: 5rem;">
 
@@ -17,7 +17,7 @@
 							<div class="product-gallery-preview order-sm-2">
 
                                 <div class="product-container">
-                                    <ul class="product-images">
+                                    <ul class="product-small-image">
                                         <li class="product-image-item"><div class="product-gallery-preview-item active" id="image1">
                                             {% if product.img %}
                                             <a href="#"><img src="{{ product.img.url }}" class="img-thumbnail" alt="{{ product.name }}"></a>
@@ -41,8 +41,8 @@
                                         </div></li>
                                         <!-- Add more image items here if needed -->
                                     </ul>
-                                    <div class="product-details">
-                                        <div class="product-gallery-preview-item active" id="image1">
+                                    <div class="product-main-image">
+                                        <div class="product-gallery-preview-item active" id="product-main-image">
                                             {% if product.img %}
                                             <a href="#"><img src="{{ product.img.url }}" class="img-thumbnail" alt="{{ product.name }}"></a>
                                             {% else %}

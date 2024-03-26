@@ -1,0 +1,85 @@
+/* Navbar styles */
+.navbar {
+    background-color: #333;
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #fff;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #555;
+}
+
+.navbar a.active {
+    background-color: #007bff;
+}
+
+.navbar .icon {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    .navbar a:not(:first-child) {display: none;}
+    .navbar a.icon {
+        float: right;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .navbar.responsive {position: relative;}
+    .navbar.responsive .icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .navbar.responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}
+
+/* dropdown */
+.dropdown-menu a {
+    color: #d6bcbc; /* Change the text color */
+    padding: 12px 16px; /* Add padding */
+    text-decoration: none; /* Remove underline */
+    display: block; /* Make the items block-level */
+  }
+  
+  /* Hover effect for dropdown items */
+  .dropdown-menu a:hover {
+    background-color: #74cf0b; /* Change the background color on hover */
+  }
+  
+  /* Show the dropdown menu when the button is hovered */
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  /* Style for the dropdown button */
+.dropdown .btn {
+    background-color: #3498db; /* Change the background color */
+    color: #0f0101; /* Change the text color */
+    border: none; /* Remove the border */
+    padding: 10px 20px; /* Add padding */
+    cursor: pointer; /* Change cursor on hover */
+  }
+  
+  /* Style for the dropdown menu */
+  .dropdown-menu {
+    display: none; /* Hide the dropdown menu by default */
+    position: center; /* Set position to absolute */
+    background-color: #f9f9f9; /* Change the background color */
+    min-width: 160px; /* Set minimum width */
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2); /* Add shadow */
+    z-index: 1; /* Ensure dropdown menu appears above other elements */
+  }
+  
