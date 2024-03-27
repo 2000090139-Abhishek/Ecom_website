@@ -14,7 +14,6 @@
     flex-direction: column;
 
 }
-
 .product-image-item {
     margin-bottom: none;
 }
@@ -24,9 +23,9 @@
 }
 
 .product-main-image img {
-    margin-bottom: 10px;
-    width: 600px;
-    max-width: 600px;
+    margin-bottom: none;
+    width: 300px;
+    max-width: 300px;
     height: auto;
     border: 1px solid #ddd; /* Add border for better visualization */
     border-radius: 5px;
@@ -38,16 +37,11 @@
 }
 
 .product-small-image img {
-    width: 198px; /* Adjust the width of small images as needed */
-    height: 198px;
+    width: 90px; /* Adjust the width of small images as needed */
+    height: 90px;
     margin-bottom: none;
     border: 1px solid #ddd; /* Add border for better visualization */
     border-radius: 5px;
-    
-    
-    
-
-
 }
 
 .product-actions {
