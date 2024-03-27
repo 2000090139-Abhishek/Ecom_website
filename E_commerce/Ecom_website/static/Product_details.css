@@ -66,3 +66,73 @@
 .buy-now-btn:hover {
     background-color: #0056b3; /* Darker shade of blue on hover */
 }
+
+
+
+
+.product-details {
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin-top: -400px;
+	margin-left: 550px;
+  }
+  
+  .product-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .product-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .product-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #009688;
+    margin-bottom: 10px;
+  }
+  
+  .product-stock {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .available-size {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .available-size a {
+    margin-right: 10px;
+  }
+  
+  .select-container {
+    margin-bottom: 20px;
+  }
+  
+  .modal-trigger {
+    display: block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .quickview-link {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+  
+  .quickview-link:hover {
+    background-color: #0056b3;
+  }
+  
