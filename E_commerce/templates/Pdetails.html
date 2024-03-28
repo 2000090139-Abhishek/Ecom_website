@@ -32,7 +32,7 @@
                                             <a href="#"><img src="{% static 'images/product.png' %}" class="img-thumbnail" alt="E-Commerce"></a>
                                             {% endif %}    
                                         </div></li>
-                                        <li class="product-image-item"><div class="product-gallery-preview-item active" id="image3">
+                                        <li class"product-image-item"><div class="product-gallery-preview-item active" id="image3">
                                             {% if product.img %}
                                             <a href="#"><img src="{{ product.img.url }}" class="img-thumbnail" alt="{{ product.name }}"></a>
                                             {% else %}
@@ -40,7 +40,7 @@
                                             {% endif %}    
                                         </div></li>
                                         <!-- Add more image items here if needed -->
-                                    </ul>
+                                    </ul>=
                                     <div class="product-main-image">
                                         <div class="product-gallery-preview-item active" id="product-main-image">
                                             {% if product.img %}
@@ -61,8 +61,8 @@
 						</div>
 						<!-- Product image Info Ends Here -->
 						<!-- Product Details Starts Here -->
-						<div class="col-xl-5 px-2 mb-3">
-							<div class="h-100 bg-light rounded-3 p-4">
+						<div class="content">
+							<div class="h-200 bg-light rounded-3 p-4">
 								<div class="product-details">
 									<h3 class="product-name">{{ product.title }}</h3>
 									<h4 class="product-description">{{ product.desc|striptags|truncatewords:50 }}...</h4>
@@ -70,11 +70,11 @@
 									<h4 class="product-price"><span class="money">${{ product.price }}</span></h4>
 
 									<span style="color: black;">Coupons for you</span><br>
-									<span>Get extra ₹500 off on 1 item(s) (price inclusive of cashback/coupon) T&C</span><br>
-									{% include '_coupon_listing.tpl' %}
-									
+									<!-- <span>Get extra ₹500 off on 1 item(s) (price inclusive of cashback/coupon) T&C</span><br> -->
+									{% include 'partials/_coupon_listing.tpl' %}
+									<br><br>
 									<span>Available Offers</span><br>
-									{% include 'offer_listing.tpl' with offers=offers %}
+									{% include 'partials/offer_listing.tpl' with offers=offers %}
 
 
 
@@ -85,7 +85,7 @@
 									{% endif %} -->
 									
 
-
+									<br><br>
 									<h4 class="product-stock"> In Stock: {% if product.inventory > 0 %}Yes{% else %}No{% endif %}</h4>
 									<!-- Add other product details here -->
 									<strong class="available-size">Available Sizes:</strong><br />
