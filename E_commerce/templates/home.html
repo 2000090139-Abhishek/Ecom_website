@@ -12,7 +12,7 @@
             {% for product in product %}
                 <div class="product item">
                     <div class="product_image">
-                       
+                            <p>Product ID: {{ product.id }}</p>
                             {% if product.img %}
                             <a href="{% url 'product_details' product.id %}"><img src="{{ product.img.url }}" class="img-thumbnail" alt="{{ product.name }}"></a>
                             {% else %}
@@ -21,10 +21,11 @@
                             {% if product.offer %}
                                 <div class="spec_offer text-center">Special offer</div>
                             {% endif %}
+                            
                             <h2>{{ product.name }}</h2>
                             <p>{{ product.description }}</p>
                             <span>${{ product.price }}</span>
-                            <button><a href="#">Add to Cart</a></button>
+                            <button><a href="{% url 'cart' %}">Add to Cart</a></button>
                        
                         
                     </div>

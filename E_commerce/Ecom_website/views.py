@@ -1,5 +1,7 @@
 
+from math import prod
 from urllib import request
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -12,6 +14,10 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from .models import Product
+from django.shortcuts import render, redirect
+from .models import Product, CartItem
+from .forms import CartItemForm
+
 
 
 def home(request):
@@ -86,4 +92,39 @@ def product_details(request, pk):
     }
 
     return render(request, 'Pdetails.html', context)
+
+
+@login_required
+def cart_details(request, product_id):
+    product = Product.objects.get(id=product_id)
+    if request.method == 'POST':
+        form = CartItemForm(request.POST)
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            # Check if the product is already in the cart
+            cart_item, created = CartItem.objects.get_or_create(product=product, user=request.user)
+            if not created:
+                cart_item.quantity += quantity
+            else:
+                cart_item.quantity = quantity
+            cart_item.save()
+            return redirect('cart')
+    else:
+        form = CartItemForm()
+    return render(request, 'cart.html', {'form': form, 'product': product})
+
+def remove_from_cart(request, cart_item_id):
+    cart_item = CartItem.objects.get(id=cart_item_id)
+    cart_item.delete()
+    return redirect('cart')
+
+def save_for_later(request, cart_item_id):
+    cart_item = CartItem.objects.get(id=cart_item_id)
+    cart_item.save_for_later = True
+    cart_item.save()
+    return redirect('cart')
+
+def cart(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    return render(request, 'cart.html', {'cart_items': cart_items})
 

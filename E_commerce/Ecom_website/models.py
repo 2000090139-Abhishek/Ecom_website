@@ -20,3 +20,19 @@ class Auth(models.Model):
 
     def __str__(self):
         return f"{self.user}"
+    
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    save_for_later = models.BooleanField(default=False)
+
+    def subtotal(self):
+        return self.product.price * self.quantity
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} ({self.subtotal()})"
+
+    class Meta:
+        unique_together = ('user', 'product', 'save_for_later')
