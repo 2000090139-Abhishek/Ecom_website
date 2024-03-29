@@ -13,9 +13,10 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from .models import Product
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
-from .models import Product, CartItem
+from .models import Product, CartItem,Cart
 from .forms import CartItemForm
 
 
@@ -93,38 +94,143 @@ def product_details(request, pk):
 
     return render(request, 'Pdetails.html', context)
 
-
 @login_required
-def cart_details(request, product_id):
+def _cart_id(request):
+    cart = request.session.session_key
+    if not cart:
+        cart = request.session.create()
+    return cart 
+
+
+def cart_details(request,product_id):
+    current_user = request.user
     product = Product.objects.get(id=product_id)
-    if request.method == 'POST':
-        form = CartItemForm(request.POST)
-        if form.is_valid():
-            quantity = form.cleaned_data['quantity']
-            # Check if the product is already in the cart
-            cart_item, created = CartItem.objects.get_or_create(product=product, user=request.user)
-            if not created:
-                cart_item.quantity += quantity
-            else:
-                cart_item.quantity = quantity
-            cart_item.save()
-            return redirect('cart')
+    if current_user.is_authenticated:
+        try:
+          pass
+        except:
+            pass 
+
+        try:
+          cart_item = CartItem.objects.get(user=current_user,product=product)
+          cart_item.quantity +=1
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+            product = product,
+            quantity =1,
+            user = current_user
+        )
+         
+        cart_item.save()
+
+        return redirect('cart')
     else:
-        form = CartItemForm()
-    return render(request, 'cart.html', {'form': form, 'product': product})
+        try:
+          cart = Cart.objects.get(cart_id=_cart_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                cart_id= _cart_id(request)
+            )  
+            cart.save()  
+        try:
+           cart_item = CartItem.objects.get(cart=cart, product=product)
+           cart_item.quantity +=1
+           cart_item.save()
 
-def remove_from_cart(request, cart_item_id):
-    cart_item = CartItem.objects.get(id=cart_item_id)
-    cart_item.delete()
-    return redirect('cart')
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+                product =product,
+                cart = cart,
+                quantity = 1
+            )
+            cart_item.save()  
+        return redirect('cart')      
 
-def save_for_later(request, cart_item_id):
-    cart_item = CartItem.objects.get(id=cart_item_id)
-    cart_item.save_for_later = True
-    cart_item.save()
-    return redirect('cart')
+ 
+def remove_cart(request, product_id):
+    current_user = request.user
+    if current_user.is_authenticated:
+  
+         product = get_object_or_404(Product, id=product_id)
+         cart_item = CartItem.objects.get(product=product, user=current_user)
+         if cart_item.quantity > 1:
+               cart_item.quantity -=1
+       
+               cart_item.save()
+         else:
+           cart_item.delete()
+         return redirect('cart')
+    else:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        if cart_item.quantity >1:
+            cart_item.quantity -=1
+            cart_item.save()
+        else:
+            cart_item.delete() 
+        return redirect('cart')  
 
-def cart(request):
-    cart_items = CartItem.objects.filter(user=request.user)
-    return render(request, 'cart.html', {'cart_items': cart_items})
+def remove_cart_item(request, product_id):
+    current_user = request.user
+    if current_user.is_authenticated:
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.get(product=product, user=current_user)
+        cart_item.delete()   
+   
+        return redirect('cart')
+    else:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        cart_item.delete()  
+        
+        return redirect('cart')
+
+def cart(request, total=0, quantity=0, cart_items=None):
+    try:
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+       
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity    
+    except ObjectDoesNotExist:
+        pass  
+
+    context = {
+        'total': total,
+        'quantity': quantity,
+        'cart_items': cart_items,
+    }        
+               
+    return render(request, 'store/cart.html', context)
+
+
+@login_required(login_url='login')
+def checkout(request, total=0,quantity=0 ,cart_items=None,):
+    try:
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user =request.user, is_active=True)
+        else:
+           cart = Cart.objects.get(cart_id=_cart_id(request))
+           cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+
+        for cart_item in cart_items:
+            total +=(cart_item.product.price *cart_item.quantity)
+            quantity += cart_item.quantity  
+    except ObjectDoesNotExist:
+        pass  
+
+    context ={
+        'total': total,
+        'quantity': quantity,
+        'cart_items': cart_items,
+    }        
+          
+    
+    return render(request, 'store/checkout.html',context)
 
