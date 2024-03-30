@@ -20,6 +20,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.cart_id
+    
+
+    class Meta:
+        app_label = 'Ecom_website'
 
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
