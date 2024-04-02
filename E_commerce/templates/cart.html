@@ -15,93 +15,126 @@
       </div>
       {%else%}
 
-      <div class="row">
-        <aside class="col-lg-9">
-          <div class="card">
-            <table class="table table-borderless table-shopping-cart">
-              <thead class="text-muted">
-                <tr class="small text-uppercase">
-                  <th scope="col">Product</th>
-                  <th scope="col" width="200" class="text-center">Quantity</th>
-                  <th scope="col" width="200" class="text-center">Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for cart_item in cart_items %}
-
-                <tr>
-                  <td>
-                    <div class="d-block d-sm-flex text-center text-sm-start">
-                      <img src="{{cart_details.product.img.url}}" width="80" alt="Product" class="border border-accent rounded-3"></a>
-                      <h3 class="fs-base mb-2 ps-3" style="line-height: 1.6;">{{cart_item.product}}</a></h3>
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    
-                    <div class="d-flex ">
-                      <div class="my-auto">
-                        <a href="{%url 'remove_cart' cart_item.product.id%}" class="btn btn-secondary rounded-circle py-0 px-2" type="button"> - </a>
-                      </div>
-                      
-                      <input type="text" class="form-control mx-3" value="{{cart_item.quantity}}" />
-
-                      <div class="my-auto">
-                        <a href="{%url 'cart' cart_item.product.id%}" class="btn btn-secondary btn-icon rounded-circle py-0 px-2" type="button">+</a>
-                      </div>
-                    </div>
-
-                    <button class="btn btn-link px-0 text-danger" type="button" href="{%url 'remove_cart_item' cart_item.product.id%}"><i class="ci-close-circle me-2"></i><span class="fs-sm">Remove</span></button>
-                   
-                  </td>
-
-                  <td class="text-center">
-                    <div class="fs-lg text-accent pt-2">Rs. {{ cart_item.sub_total }}</div>
-                    <small>Rs. {{cart_item.product.price}} each</small>
-                  </td>
-                  
-
-                  {% endfor %}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <!-- card.// -->
-        </aside>
-        <!-- col.// -->
-        <aside class="col-lg-3">
-          <div class="card">
-            <div class="card-body">
-              <dl class="dlist-align">
-                <dt>Total price:</dt>
-                <dd class="text-right">Rs. {{total}}</dd>
-              </dl>
-              <dl class="dlist-align">
-                <dt>Grand Total:</dt>
-                <dd class="text-right text-dark b">
-                  <strong>Rs. {{total}}</strong>
-                </dd>
-              </dl>
-              <hr />
-              <p class="text-center mb-3">
-                <img src="{%static 'images/misc/payments.png'%}" height="26" />
-              </p>
-              <a class="btn btn-primary btn-shadow d-block w-100 mt-4" href="{%url 'checkout'%}"><i class="ci-card fs-lg me-2"></i>Proceed to Checkout</a>
-
-            </div>
-            <!-- card-body.// -->
-          </div>
-          <!-- card.// -->
-        </aside>
-        <!-- col.// -->
+      <h2>Your Shopping Cart</h2>
+      <br />
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Subtotal</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cart_item in cart_items %}
+            <tr id="cartItem{{forloop.counter}}">
+              <td>
+                <div class="media align-items-center">
+                  <a class="reset-anchor d-block animsition-link" href="#">
+                    {% if cart_item.product.img %}
+                    <img src="{{cart_item.product.img.url}}" alt="E-Commerce" width="70">
+                    {% else %}
+                    <img src="{% static 'images/product.png' %}" alt="E-Commerce" width="70">
+                    {% endif %}
+                  </a>
+                  <div class="media-body">
+                    <a class="reset-anchor animsition-link" href="#">
+                      {{cart_item.product.name}}
+                    </a>
+                    <p class="small text-muted">
+                      {% if cart_item.variations.all %}
+                        {% for variation in cart_item.variations.all %}
+                          {{variation.option.display}}: {{variation.value}}<br> 
+                        {% endfor %}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="me-2">{{cart_item.product.price}}</span>
+                  <button type="button" data-product="{{cart_item.product.id}}" data-action="remove" class="btn btn-sm btn-danger update-cart">-</button>
+                  {% include "currency" with cart_item=cart_item %} 
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="me-2">{{cart_item.quantity}}</span>
+                  <button type="button" data-product="{{cart_item.product.id}}" data-action="add" class="btn btn-sm btn-success update-cart">+</button>
+                  <button type="button" data-product="{{cart_item.product.id}}" data-action="remove" class="btn btn-sm btn-danger update-cart">-</button>
+                  <button type="button" data-product="{{cart_item.product.id}}" data-action="delete" class="btn btn-sm btn-danger update-cart">Delete</button>  
+                  <button type="button" data-product="{{cart_item.product.id}}" data-action="clear" class="btn btn-sm btn-danger update-cart">Clear</button>
+                  <button type="button" class="btn btn-sm btn-success update-cart">Update</button>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="me-2">{{cart_item.get_total}}</span>
+                  {% include "currency" with price=cart_item.get_total %} 
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <a class="reset-anchor animsition-link" href="{% url 'delete_cart_item' cart_item.id %}"> Remove from Cart</a>
+                  <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{cart_item.product.id}}">
+                    <input type="hidden" name="action" value="delete">
+                    <button type="submit" class="btn btn-sm btn-danger update-cart">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-      <!-- row.// -->
-      <!-- ============================ COMPONENT 1 END .// ================================= -->
       {% endif %}
+      
+      <!-- Cart Summary -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Cart Summary</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+              Total Quantity:
+              <span class="text-muted">{{total_quantity}}</span>  
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-0">
+              Total Price:
+              <span class="text-muted">{{total_price}}</span>  
+            </li>
+          </ul>
+          <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">Checkout</a>
+        </div>
+      </div>
     </div>
-    <!-- container .//  -->
+    
+    <!-- Sidebar Area-->
+    <div class="col-xl-3 col-lg-4"> 
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Cart Summary</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+              Total Quantity:
+              <span class="text-muted">{{total_quantity}}</span>  
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-0">
+              Total Price:
+              <span class="text-muted">{{total_price}}</span>  
+            </li>
+          </ul>
+          <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">Checkout</a>
+        </div>
+      </div>
+    </div>
   </section>
-
 </main>
-
-
 {% endblock content %}

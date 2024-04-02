@@ -14,6 +14,7 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     cart_id = models.CharField(max_length=250, blank=True, unique=True)
     date_added = models.DateField(auto_now_add=True)
