@@ -11,7 +11,7 @@
       <h2>Your Shopping Cart is Empty</h2>
       <br />
       <div class="text-center">
-        <a href="{%url 'home'%}" class="btn btn-primary">Continue Shopping</a>
+        <a href="{% url 'home'%}" class="btn btn-primary">Continue Shopping</a>
       </div>
       {%else%}
 
@@ -75,17 +75,15 @@
               </td>
               <td>
                 <div class="d-flex align-items-center">
-                  <span class="me-2">{{cart_item.get_total}}</span>
-                  {% include "currency" with price=cart_item.get_total %} 
+                  <span class="me-2">{{cart_item.subtotal}}</span>
+                  {% include "currency" with price=cart_item.subtotal %} 
                 </div>
               </td>
               <td>
                 <div class="d-flex align-items-center">
-                  <a class="reset-anchor animsition-link" href="{% url 'delete_cart_item' cart_item.id %}"> Remove from Cart</a>
-                  <form action="" method="post">
+                  <a class="reset-anchor animsition-link" href="{% url 'remove_cart_item' cart_item.product.id %}"> Remove from Cart</a>
+                  <form action="{% url 'remove_cart_item' cart_item.product.id %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="product_id" value="{{cart_item.product.id}}">
-                    <input type="hidden" name="action" value="delete">
                     <button type="submit" class="btn btn-sm btn-danger update-cart">Delete</button>
                   </form>
                 </div>
@@ -111,7 +109,7 @@
               <span class="text-muted">{{total_price}}</span>  
             </li>
           </ul>
-          <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">Checkout</a>
+          <a href="#" class="btn btn-primary btn-lg btn-block">Checkout</a>
         </div>
       </div>
     </div>
@@ -131,7 +129,7 @@
               <span class="text-muted">{{total_price}}</span>  
             </li>
           </ul>
-          <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">Checkout</a>
+          <a href="#" class="btn btn-primary btn-lg btn-block">Checkout</a>
         </div>
       </div>
     </div>

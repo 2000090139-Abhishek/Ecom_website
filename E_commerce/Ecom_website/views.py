@@ -211,7 +211,8 @@ def cart(request, total=0, quantity=0,cart_items=None):
         'total': total,
         'quantity': quantity,
         'cart_items': cart_items,
-    }        
+    } 
+    print("Cart Items:", cart_items)       
                
     return render(request, 'cart.html',context)
 
