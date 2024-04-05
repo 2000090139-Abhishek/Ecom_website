@@ -1,4 +1,6 @@
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 from .models import CartItem, Cart
 from math import prod
 from urllib import request
@@ -102,119 +104,79 @@ def _cart_id(request):
     if not cart_id:
         cart_id = str(uuid.uuid4())  # Generate a unique cart ID
         request.session['cart_id'] = cart_id
+        print("Cart ID:", cart_id)
     return cart_id
 
 
 
-def cart_details(request,product_id):
+
+
+@login_required
+def cart_details(request, product_id):
     current_user = request.user
-    product = Product.objects.get(id=product_id)
-    if current_user.is_authenticated:
-        try:
-          pass
-        except:
-            pass 
-
-        try:
-          cart_item = CartItem.objects.get(user=current_user,product=product)
-          cart_item.quantity +=1
-        except CartItem.DoesNotExist:
-            cart_item = CartItem.objects.create(
-            product = product,
-            quantity =1,
-            user = current_user
+    product = get_object_or_404(Product, id=product_id)
+    
+    try:
+        cart_item = CartItem.objects.get(user=current_user, product=product)
+        cart_item.quantity += 1
+    except CartItem.DoesNotExist:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_item = CartItem.objects.create(
+            product=product,
+            quantity=1,
+            user=current_user,
+            cart=cart
         )
-         
-        cart_item.save()
 
-        return redirect('cart')
-    else:
-        try:
-          cart = Cart.objects.get(cart_id=_cart_id(request))
-        except Cart.DoesNotExist:
-            cart = Cart.objects.create(
-                cart_id= _cart_id(request)
-            )  
-            cart.save()  
-        try:
-           cart_item = CartItem.objects.get(cart=cart, product=product)
-           cart_item.quantity +=1
-           cart_item.save()
+    cart_item.save()
 
-        except CartItem.DoesNotExist:
-            cart_item = CartItem.objects.create(
-                product =product,
-                cart = cart,
-                quantity = 1
-            )
-            cart_item.save()  
-        return redirect('cart.html')      
+    return redirect('cart')
 
  
+
+
+@login_required
 def remove_cart(request, product_id):
-    current_user = request.user
-    if current_user.is_authenticated:
-  
-         product = get_object_or_404(Product, id=product_id)
-         
-         cart_item = CartItem.objects.get(product=product, user=current_user)
-         if cart_item.quantity > 1:
-               cart_item.quantity -=1
-       
-               cart_item.save()
-         else:
-           cart_item.delete()
-         return redirect('cart.html')
+    product = get_object_or_404(Product, id=product_id)
+    cart_item = get_object_or_404(CartItem, product=product, user=request.user)
+    
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
     else:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        product = get_object_or_404(Product, id=product_id)
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        if cart_item.quantity >1:
-            cart_item.quantity -=1
-            cart_item.save()
-        else:
-            cart_item.delete() 
-        return redirect('cart.html')  
+        cart_item.delete()
+    
+    return redirect('cart')
 
+@login_required
 def remove_cart_item(request, product_id):
-    current_user = request.user
-    if current_user.is_authenticated:
-        product = get_object_or_404(Product, id=product_id)
-        cart_item = CartItem.objects.get(product=product, user=current_user)
-        cart_item.delete()   
-   
-        return redirect('cart.html')
-    else:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        product = get_object_or_404(Product, id=product_id)
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.delete()  
-        
-        return redirect('cart.html')
+    product = get_object_or_404(Product, id=product_id)
+    cart_item = get_object_or_404(CartItem, product=product, user=request.user)
+    cart_item.delete()
+    
+    return redirect('cart')
 
 
-def cart(request, total=0, quantity=0,cart_items=None):
-    try:
-        if request.user.is_authenticated:
-            cart_items = CartItem.objects.filter(user =request.user, is_active=True)
-        else:
-           cart = Cart.objects.get(cart_id=_cart_id(request))
-           cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-       
-        for cart_item in cart_items:
-            total +=(cart_item.product.price *cart_item.quantity)
-            quantity += cart_item.quantity    
-    except ObjectDoesNotExist:
-        pass  
 
-    context ={
-        'total': total,
-        'quantity': quantity,
+
+@login_required
+def cart(request):
+    cart_items = CartItem.objects.filter(user=request.user.id, is_active=True)
+    
+    if not cart_items:
+        # If the cart is empty, redirect to the home page or any other page as needed
+        return render(request, 'cart.html')
+    
+    total_quantity = sum(item.quantity for item in cart_items)
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+    context = {
         'cart_items': cart_items,
-    } 
-    print("Cart Items:", cart_items)       
-               
-    return render(request, 'cart.html',context)
+        'total_quantity': total_quantity,
+        'total_price': total_price,
+    }
+
+    return render(request, 'cart.html', context)
 
 
 
