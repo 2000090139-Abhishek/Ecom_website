@@ -1,11 +1,11 @@
 
-from django.core.exceptions import ObjectDoesNotExist
+
 from django.urls import reverse
-from .models import CartItem, Cart
+
 from math import prod
 from urllib import request
 import uuid
-from django.http import HttpResponseRedirect
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -20,8 +20,9 @@ from django.core.exceptions import ValidationError
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
-from .models import Product, CartItem,Cart
-from .forms import CartItemForm
+from .models import *
+from .forms import *
+
 
 
 
