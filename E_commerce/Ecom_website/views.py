@@ -102,12 +102,18 @@ def product_details(request, pk):
 
 def cart(request):
     if request.user.is_authenticated:
-        customer = request.user.customer
+        user = request.user
+        if hasattr(user, 'customer'):
+            customer = user.customer
+        else:
+            # Create a Customer object for the user if it doesn't exist
+            customer = Customer.objects.create(user=user, name=user.username, email=user.email)
+        
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
         items = order.orderitem_set.all()
     else:
         items = []
-        
+
     context = {'items': items}
     return render(request, 'cart.html', context)
 
