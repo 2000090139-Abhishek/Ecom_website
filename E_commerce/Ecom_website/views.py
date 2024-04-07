@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from math import prod
 from urllib import request
-import uuid
+
 
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, logout, authenticate
@@ -21,7 +21,7 @@ from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from .models import *
-from .forms import *
+
 
 
 
@@ -101,8 +101,15 @@ def product_details(request, pk):
 
 
 def cart(request):
-	context = {}
-	return render(request, 'cart.html', context)
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+    else:
+        items = []
+        
+    context = {'items': items}
+    return render(request, 'cart.html', context)
 
 def checkout(request):
 	context = {}
