@@ -13,13 +13,9 @@ urlpatterns = [
     path('logout/',views.logOutUser,name="logout"),
     path('product/<int:pk>/', views.product_details, name='product_details'),
 
-    
-    # path('cart/', views.cart, name='cart'),  # Keep this for displaying the cart
-    # path('cart/add/<int:product_id>/', views.cart_details, name='add_to_cart'),  # Rename this for adding products
-    # path('remove_cart/<int:product_id>/', views.remove_cart, name='remove_cart'),
-    # path('remove_cart_item/<int:product_id>/', views.remove_cart_item, name='remove_cart_item'),
-    
     path('cart/', views.cart, name="cart"),
 	path('checkout/', views.checkout, name="checkout"),
+    path('update_item/',views.updateItem, name="updateItem"),
+    
 
 ]

@@ -51,7 +51,7 @@
                                         </div>
                                         <!-- Add other product details here -->
                                         <div class="product-actions">
-                                            <button class="add-to-cart-btn"><a href="{% url 'cart' %}">Add to Cart</a></button>
+                                            <button data-product="{{ product.id }} data-action="add" class="add-to-cart-btn"><a href="{% url 'cart' %}">Add to Cart</a></button>
                                             <button class="buy-now-btn">Buy Now</button>
 											
                                         </div>
@@ -122,6 +122,7 @@
 				</div>
 			</section>
 		</div>
+		<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 	</section>
 </main>
 {% endblock content %}
