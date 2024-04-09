@@ -126,17 +126,25 @@ def cart(request):
         
         orders = Order.objects.filter(customer=customer, complete=False)
         if orders.exists():
-           order = orders.first()  # Or handle multiple orders accordingly
+           order = orders.first()  
         else:
            order = Order.objects.create(customer=customer, complete=False)
         items = order.orderitem_set.all()
-        print(items)  # Print items to console for debugging
+        
     else:
         items = []
+        order={'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
 
-    context = {'items': items}
+    context = {'items': items,'order':order}
     return render(request, 'cart.html', context)
 
 def checkout(request):
-	context = {}
+    if request.user.is_authenticated:
+        user = request.user
+        customer, created = Customer.objects.get_or_create(user=user, defaults={'name': user.username, 'email': user.email})
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+    else:
+        items = []
+    context = {'items': items, 'order': order}
 	return render(request, 'Checkout.html', context)

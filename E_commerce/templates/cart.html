@@ -14,8 +14,8 @@
 
           <table class="table">
             <tr>
-              <th><h5>Items: <strong>3</strong></h5></th>
-              <th><h5>Total: <strong>$43</strong></h5></th>
+              <th><h5>Items: <strong>Rs.{{order.get_cart_items}}</strong></h5></th>
+              <th><h5>Total: <strong>Rs.{{order.get_cart_total}}</strong></h5></th>
               <th>
                 <a style="float:right; margin: 5px" class="btn btn-success" href="{% url 'checkout'%}">Checkout</a>
               </th>
@@ -40,9 +40,9 @@
           <div class="cart-row">
             <div style="flex:2">
               {% if product.img %}
-                  <a href="#"><img src="{{ product.img.url }}" class="img-thumbnail" alt="{{ product.name }}"></a>
+                  <a href="#"><img src="{{ item.product.img.url }}" class="img-thumbnail" alt="/"></a>
               {% else %}
-                  <a href="#"><img src="{% static 'images/product.png' %}" class="img-thumbnail" alt="E-Commerce"></a>
+                  <a href="#"><img src="{% static 'images/product.png' %}" class="img-thumbnail" alt="/"></a>
               {% endif %}
             </div>
             <div style="flex:2"><p>{{item.product.name}}</p></div>
