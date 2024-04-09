@@ -100,17 +100,37 @@ def product_details(request, pk):
     return render(request, 'Pdetails.html', context)
 
 
+# def cart(request):
+#     if request.user.is_authenticated:
+#         user = request.user
+#         if hasattr(user, 'customer'):
+#             customer = user.customer
+#         else:
+#             # Create a Customer object for the user if it doesn't exist
+#             customer = Customer.objects.create(user=user, name=user.username, email=user.email)
+        
+#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
+#         items = order.orderitem_set.all()
+#         print(items)
+#     else:
+#         items = []
+
+#     context = {'items': items}
+#     return render(request, 'cart.html', context)
+
 def cart(request):
     if request.user.is_authenticated:
         user = request.user
-        if hasattr(user, 'customer'):
-            customer = user.customer
-        else:
-            # Create a Customer object for the user if it doesn't exist
-            customer = Customer.objects.create(user=user, name=user.username, email=user.email)
+        customer, created = Customer.objects.get_or_create(user=user, defaults={'name': user.username, 'email': user.email})
         
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        
+        orders = Order.objects.filter(customer=customer, complete=False)
+        if orders.exists():
+           order = orders.first()  # Or handle multiple orders accordingly
+        else:
+           order = Order.objects.create(customer=customer, complete=False)
         items = order.orderitem_set.all()
+        print(items)  # Print items to console for debugging
     else:
         items = []
 
