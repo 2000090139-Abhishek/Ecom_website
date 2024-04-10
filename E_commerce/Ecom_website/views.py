@@ -1,5 +1,8 @@
 
 
+from .models import Product, Order, OrderItem
+
+
 import json
 from django.http import JsonResponse
 from django.urls import reverse
@@ -102,23 +105,7 @@ def product_details(request, pk):
     return render(request, 'Pdetails.html', context)
 
 
-# def cart(request):
-#     if request.user.is_authenticated:
-#         user = request.user
-#         if hasattr(user, 'customer'):
-#             customer = user.customer
-#         else:
-#             # Create a Customer object for the user if it doesn't exist
-#             customer = Customer.objects.create(user=user, name=user.username, email=user.email)
-        
-#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-#         items = order.orderitem_set.all()
-#         print(items)
-#     else:
-#         items = []
 
-#     context = {'items': items}
-#     return render(request, 'cart.html', context)
 
 def cart(request):
     if request.user.is_authenticated:
@@ -156,28 +143,43 @@ def checkout(request):
     context = {'items': items, 'order': order}
     return render(request, 'Checkout.html', context)
 
+        
 def updateItem(request):
-    data = json.loads(request.body)
-    productId = data['productId']
-    action = data['action']
+    
+        try:
+            data = json.loads(request.body)
+            productId = data.get('productId')
+            action = data.get('action')
 
-    print('Action:', action)
-    print('Product:', productId)
+            if not productId or not action:
+                return JsonResponse({'error': 'Invalid data provided'}, status=400)
 
-    customer = request.user.customer
-    product = Product.objects.get(id=productId)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+            customer = request.user.customer
+            product = Product.objects.get(id=productId)
 
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+            # Get the open order for the customer
+            order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
-    if action == 'add':
-        orderItem.quantity = (orderItem.quantity + 1)
-    elif action == 'remove':
-        orderItem.quantity = (orderItem.quantity - 1)
+            # Get or create the order item for the product in the open order
+            orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
 
-    orderItem.save()
+            # If the action is 'add', increase quantity; if 'remove', decrease quantity
+            if action == 'add':
+                orderItem.quantity += 1
+            elif action == 'remove':
+                orderItem.quantity -= 1
 
-    if orderItem.quantity <= 0:
-        orderItem.delete()
+            # Save the order item
+            orderItem.save()
 
-    return JsonResponse('Item was added', safe=False)
+            # If quantity is zero or less, delete the order item
+            if orderItem.quantity <= 0:
+                orderItem.delete()
+
+            return JsonResponse({'message': 'Item quantity updated successfully'}, status=200)
+        
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Product does not exist'}, status=404)
+        
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
