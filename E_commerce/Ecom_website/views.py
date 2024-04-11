@@ -32,8 +32,26 @@ from .models import *
 
 
 def home(request):
+
+    if request.user.is_authenticated:
+        user = request.user
+        customer, created = Customer.objects.get_or_create(user=user, defaults={'name': user.username, 'email': user.email})
+        orders = Order.objects.filter(customer=customer, complete=False)
+        if orders.exists():
+           order = orders.first()  
+        else:
+           order = Order.objects.create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        CartItems=order.get_cart_items
+        
+    else:
+        items = []
+        order={'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
+        CartItems=order['get_cart_items']
+
+    context={'product':product,'CartItems':CartItems}
     product = Product.objects.all()  # Retrieve all Product objects from the database
-    return render(request, 'home.html', {'product': product})
+    return render(request, 'home.html', context)
     
 def register(request):
     if request.method == 'POST':
@@ -119,12 +137,14 @@ def cart(request):
         else:
            order = Order.objects.create(customer=customer, complete=False)
         items = order.orderitem_set.all()
+        CartItems=order.get_cart_items
         
     else:
         items = []
         order={'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
+        CartItems=order['get_cart_items']
 
-    context = {'items': items,'order':order}
+    context = {'items': items,'order':order,'CartItems':CartItems}
     return render(request, 'cart.html', context)
 
 def checkout(request):
@@ -137,10 +157,13 @@ def checkout(request):
         else:
            order = Order.objects.create(customer=customer, complete=False)
         items = order.orderitem_set.all()
+        CartItems=order.get_cart_items
     else:
         items = []
         order={'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
-    context = {'items': items, 'order': order}
+        CartItems=order['get_cart_items']
+
+    context = {'items': items, 'order': order,'CartItems':CartItems}
     return render(request, 'Checkout.html', context)
 
         

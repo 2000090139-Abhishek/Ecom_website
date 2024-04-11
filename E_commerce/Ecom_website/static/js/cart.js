@@ -1,4 +1,4 @@
-var updateBtns = document.getElementsByClassName('update-cart');
+var updateBtns = document.getElementsByClassName('Add-to-cart');
 
 for (var i = 0; i < updateBtns.length; i++) {
     updateBtns[i].addEventListener('click', function() {
@@ -7,7 +7,7 @@ for (var i = 0; i < updateBtns.length; i++) {
         console.log('productId:', productId, 'action:', action);
 
         console.log('USER:', user);
-        if (user === 'AnonymousUser') {
+        if (user == 'AnonymousUser') {
             addCookieItem(productId, action);
         } else {
             updateUserOrder(productId, action);
@@ -35,7 +35,8 @@ function updateUserOrder(productId, action) {
         return response.json();
     })
     .then(data => {
-        console.log(data);
+        console.log('data:', data);
+        location.reload()
         // Handle the response data as needed
     })
     .catch(error => {
