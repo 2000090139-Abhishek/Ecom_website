@@ -71,6 +71,7 @@
 		</div>
 	</div>
 	<script type="text/javascript">
+		var user = '{{request.user}}'
 		var shipping = '{{order.shipping}}'
 		var total = '{{order.get_cart_total}}'
 		if(shipping == 'False' && total > 0){
@@ -78,7 +79,7 @@
 			document.getElementById('form-wrapper').classList.add("hidden");
 			document.getElementById('payment-info').classList.remove("hidden");
 		}
-		if(user != 'AnonymousUser'){
+		if(user === 'AnonymousUser'){
 			document.getElementById('user-info').innerHTML = ""
 			document.getElementById('form-wrapper').classList.remove("hidden");
 			document.getElementById('payment-info').classList.remove("hidden");
