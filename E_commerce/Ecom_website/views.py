@@ -49,8 +49,9 @@ def home(request):
         order={'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
         CartItems=order['get_cart_items']
 
-    context={'product':product,'CartItems':CartItems}
+    
     product = Product.objects.all()  # Retrieve all Product objects from the database
+    context={'product':product,'CartItems':CartItems}
     return render(request, 'home.html', context)
     
 def register(request):
@@ -167,42 +168,37 @@ def checkout(request):
     return render(request, 'Checkout.html', context)
 
         
+
+
 def updateItem(request):
-    
-        try:
-            data = json.loads(request.body)
-            productId = data.get('productId')
-            action = data.get('action')
+    try:
+        data = json.loads(request.body)
+        productId = data.get('productId')
+        action = data.get('action')
 
-            if not productId or not action:
-                return JsonResponse({'error': 'Invalid data provided'}, status=400)
+        if not productId or not action:
+            return JsonResponse({'error': 'Invalid data provided'}, status=400)
 
-            customer = request.user.customer
-            product = Product.objects.get(id=productId)
+        customer = request.user.customer
+        product = Product.objects.get(id=productId)
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
 
-            # Get the open order for the customer
-            order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        if action == 'add':
+            orderItem.quantity += 1
+        elif action == 'remove':
+            orderItem.quantity -= 1
 
-            # Get or create the order item for the product in the open order
-            orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+        orderItem.save()
 
-            # If the action is 'add', increase quantity; if 'remove', decrease quantity
-            if action == 'add':
-                orderItem.quantity += 1
-            elif action == 'remove':
-                orderItem.quantity -= 1
+        if orderItem.quantity <= 0:
+            orderItem.delete()
 
-            # Save the order item
-            orderItem.save()
+        return JsonResponse({'message': 'Item quantity updated successfully'}, status=200)
 
-            # If quantity is zero or less, delete the order item
-            if orderItem.quantity <= 0:
-                orderItem.delete()
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Product does not exist'}, status=404)
 
-            return JsonResponse({'message': 'Item quantity updated successfully'}, status=200)
-        
-        except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Product does not exist'}, status=404)
-        
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
