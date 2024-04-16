@@ -212,12 +212,13 @@ def processOrder(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        total = float(data['form']['total'])
+        order.transaction_id = transaction_id
     else:
     #     customer, order = guestOrder(request, data)
         print('User is not logged in')
 
-    total = float(data['form']['total'])
-    order.transaction_id = transaction_id
+
 
     if total == float(order.get_cart_total):
         order.complete = True
@@ -233,12 +234,12 @@ def processOrder(request):
             zipcode=data['shipping']['zipcode'],
         )
 
-    for item in data['items']:
-        product = Product.objects.get(id=item['product'])
-        orderItem = OrderItem.objects.create(
-            product=product,
-            order=order,
-            quantity=item['quantity']
-        )
+    # for item in data['items']:
+    #     product = Product.objects.get(id=item['product'])
+    #     orderItem = OrderItem.objects.create(
+    #         product=product,
+    #         order=order,
+    #         quantity=item['quantity']
+    #     )
 
     return JsonResponse('Payment submitted..', safe=False)
